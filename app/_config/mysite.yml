@@ -1,0 +1,58 @@
+---
+Name: myproject
+---
+SilverStripe\Core\Manifest\ModuleManifest:
+  project: app
+SilverStripe\SiteConfig\SiteConfig:
+  extensions:
+    - CustomSiteConfig
+SilverStripe\TinyMCE\TinyMCEConfig:
+  editor_css:
+    - 'themes/blueyachting/css/editor.css'
+SilverStripe\View\SSViewer:
+  rewrite_hash_links: false
+SilverStripe\SpamProtection\Extension\FormSpamProtectionExtension:
+    default_spam_protector: UndefinedOffset\NoCaptcha\Forms\NocaptchaProtector
+UndefinedOffset\NoCaptcha\Forms\NocaptchaField:
+    site_key: "6Le7ROASAAAAAM9Zm2Haz4YdqC3HaOg9D7Xb6Jk-" #Your site key (required)
+    secret_key: "6Le7ROASAAAAABppYfq5IyYRHpXHDpRJHbFzTXc5" #Your secret key (required)
+    verify_ssl: true #Allows you to disable php-curl's SSL peer verification by setting this to false (optional, defaults to true)
+    default_theme: "light" #Default theme color (optional, light or dark, defaults to light)
+    default_type: "image" #Default captcha type (optional, image or audio, defaults to image)
+    default_size: "normal" #Default size (optional, normal, compact or invisible, defaults to normal)
+    default_badge: "bottomright" #Default badge position (bottomright, bottomleft or inline, defaults to bottomright)
+    proxy_server: "" #Your proxy server address (optional)
+    proxy_port: "" #Your proxy server address port (optional)
+    proxy_auth: "" #Your proxy server authentication information (optional)
+SilverStripe\Assets\File:
+  force_resample: true
+SilverStripe\Assets\Storage\DBFile:
+  force_resample: true
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Assets\Image_Backend:
+    properties:
+      Quality: 75
+---
+Name: my-project-assetsflysystem
+After: '#assetsflysystem'
+---
+# SilverStripe 4.4 changes the way files are resolved. `silverstripe-assets` resolves files using a variety of formats
+# by default. When starting a brand new project on SilverStripe 4.4 or greater, those extra formats are not needed and
+# will slowdown file resolution requests a bit. This config removes those redundant formats.
+SilverStripe\Core\Injector\Injector:
+  # Define public resolution strategy
+  SilverStripe\Assets\FilenameParsing\FileResolutionStrategy.public:
+    class: SilverStripe\Assets\FilenameParsing\FileIDHelperResolutionStrategy
+    properties:
+      ResolutionFileIDHelpers:
+        - '%$SilverStripe\Assets\FilenameParsing\HashFileIDHelper'
+      DefaultFileIDHelper: '%$SilverStripe\Assets\FilenameParsing\NaturalFileIDHelper'
+      VersionedStage: Live
+  # Define protected resolution strategy
+  SilverStripe\Assets\FilenameParsing\FileResolutionStrategy.protected:
+    class: SilverStripe\Assets\FilenameParsing\FileIDHelperResolutionStrategy
+    properties:
+      DefaultFileIDHelper: '%$SilverStripe\Assets\FilenameParsing\HashFileIDHelper'
+      ResolutionFileIDHelpers:
+        - '%$SilverStripe\Assets\FilenameParsing\HashFileIDHelper'
+      VersionedStage: Stage
