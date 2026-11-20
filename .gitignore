@@ -1,0 +1,11 @@
+/vendor/
+/public/assets/
+/public/_resources/
+/.ddev/
+/themes/simple/
+
+*.env
+*.env.example
+*.sql
+*.gz
+*.log
